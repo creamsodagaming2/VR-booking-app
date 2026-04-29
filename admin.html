@@ -1,0 +1,179 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.wrap { max-width: 620px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+h1 { font-size: 20px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.sub { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+label { display: block; font-size: 13px; color: var(--color-text-secondary); margin-bottom: 6px; margin-top: 1rem; }
+label:first-of-type { margin-top: 0; }
+input { width: 100%; font-family: var(--font-sans); }
+.sec { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 10px; }
+.lock-wrap { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 2.5rem 2rem; text-align: center; }
+.lock-wrap p { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 1rem; }
+.lock-wrap input { max-width: 240px; margin: 0 auto 1rem; }
+.btn { padding: 9px 20px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); font-size: 14px; cursor: pointer; font-family: var(--font-sans); color: var(--color-text-primary); }
+.btn:hover { background: var(--color-background-secondary); }
+.btn-sm { padding: 6px 14px; font-size: 13px; }
+.stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1.25rem; }
+.stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; }
+.stat-v { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.stat-l { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.tab-row { display: flex; gap: 16px; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 1rem; }
+.tab { font-size: 14px; color: var(--color-text-secondary); padding-bottom: 8px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -0.5px; }
+.tab.on { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); font-weight: 500; }
+.brow { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.brow:last-child { border-bottom: none; }
+.av { width: 36px; height: 36px; border-radius: 50%; background: var(--color-background-info); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: var(--color-text-info); flex-shrink: 0; }
+.bname { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.bcon { font-size: 13px; color: var(--color-text-secondary); }
+.bslot { margin-left: auto; text-align: right; font-size: 13px; flex-shrink: 0; }
+.bst { font-weight: 500; color: var(--color-text-primary); }
+.bsd { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+.xbtn { background: none; border: none; cursor: pointer; color: var(--color-text-tertiary); font-size: 16px; padding: 4px; border-radius: 4px; }
+.xbtn:hover { color: var(--color-text-danger); }
+.empty { text-align: center; padding: 2rem; color: var(--color-text-secondary); font-size: 14px; }
+.block-form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: flex-end; }
+.block-form label { margin-top: 0; }
+.add-btn { padding: 9px 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); font-size: 14px; cursor: pointer; font-family: var(--font-sans); color: var(--color-text-primary); height: 36px; white-space: nowrap; }
+.add-btn:hover { background: var(--color-background-secondary); }
+.ab-list { display: flex; flex-direction: column; gap: 8px; margin-top: 1rem; }
+.ab-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); font-size: 13px; color: var(--color-text-primary); }
+.ab-item small { color: var(--color-text-secondary); font-size: 11px; }
+</style>
+
+<div class="wrap">
+  <h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">VR headset booking admin panel</h2>
+
+  <div id="locked">
+    <div class="lock-wrap">
+      <h1 style="margin-bottom:8px;">Admin panel</h1>
+      <p>Enter your password to manage bookings and availability.</p>
+      <input type="password" id="pw" placeholder="Password" onkeydown="if(event.key==='Enter')unlock()" />
+      <br/>
+      <button class="btn" onclick="unlock()">Unlock</button>
+      <p id="pwerr" style="color:var(--color-text-danger);font-size:13px;margin-top:8px;display:none;">Incorrect password.</p>
+    </div>
+  </div>
+
+  <div id="unlocked" style="display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <h1>Admin panel</h1>
+      <button class="btn btn-sm" onclick="lock()">Lock</button>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="tab-row">
+      <div class="tab on" id="tb-b" onclick="tab('b')">Bookings</div>
+      <div class="tab" id="tb-a" onclick="tab('a')">Availability</div>
+    </div>
+
+    <div id="pane-b">
+      <div class="card"><div id="blist"></div></div>
+    </div>
+
+    <div id="pane-a" style="display:none;">
+      <div class="card">
+        <div class="sec">Add an availability block</div>
+        <div class="block-form">
+          <div><label>Date</label><input type="date" id="ab-date" /></div>
+          <div><label>Start</label><input type="time" id="ab-start" /></div>
+          <div><label>End</label><input type="time" id="ab-end" /></div>
+          <button class="add-btn" onclick="addBlock()">+ Add</button>
+        </div>
+        <div class="ab-list" id="ab-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY='vr_v2', PASS='admin123';
+
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{"blocks":[],"bookings":[]}');}catch{return{blocks:[],bookings:[]};}}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d));}
+function mins(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+function addM(t,m){const v=mins(t)+m;return `${String(Math.floor(v/60)).padStart(2,'0')}:${String(v%60).padStart(2,'0')}`;}
+function fmtT(t){const[h,m]=t.split(':').map(Number);return `${((h%12)||12)}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`;}
+function fmtD(s){return new Date(s+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});}
+function ini(n){return n.trim().split(/\s+/).slice(0,2).map(w=>w[0].toUpperCase()).join('');}
+
+function unlock(){
+  if(document.getElementById('pw').value===PASS){
+    document.getElementById('locked').style.display='none';
+    document.getElementById('unlocked').style.display='';
+    renderAdmin();
+  } else { document.getElementById('pwerr').style.display=''; }
+}
+function lock(){
+  document.getElementById('locked').style.display='';
+  document.getElementById('unlocked').style.display='none';
+  document.getElementById('pw').value='';
+}
+function tab(t){
+  document.getElementById('pane-b').style.display=t==='b'?'':'none';
+  document.getElementById('pane-a').style.display=t==='a'?'':'none';
+  document.getElementById('tb-b').className='tab'+(t==='b'?' on':'');
+  document.getElementById('tb-a').className='tab'+(t==='a'?' on':'');
+}
+
+function renderAdmin(){
+  const d=load();
+  const totalM=d.bookings.reduce((s,b)=>s+(b.endIdx-b.startIdx+1)*30,0);
+  const h=Math.floor(totalM/60),m=totalM%60;
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><div class="stat-v">${d.bookings.length}</div><div class="stat-l">Bookings</div></div>
+    <div class="stat"><div class="stat-v">${d.blocks.length}</div><div class="stat-l">Avail. blocks</div></div>
+    <div class="stat"><div class="stat-v">${h}h${m?` ${m}m`:''}</div><div class="stat-l">Time booked</div></div>`;
+
+  const bl=document.getElementById('blist');
+  if(!d.bookings.length){bl.innerHTML='<div class="empty">No bookings yet.</div>';}
+  else {
+    const sorted=[...d.bookings].sort((a,b)=>a.date.localeCompare(b.date)||a.startTime.localeCompare(b.startTime));
+    bl.innerHTML=sorted.map(b=>`<div class="brow">
+      <div class="av">${ini(b.name)}</div>
+      <div style="flex:1;min-width:0;"><div class="bname">${b.name}</div><div class="bcon">${b.contact}</div></div>
+      <div class="bslot"><div class="bst">${fmtT(b.startTime)} – ${fmtT(b.endTime)}</div><div class="bsd">${fmtD(b.date)} · ${(b.endIdx-b.startIdx+1)*30} min</div></div>
+      <button class="xbtn" onclick="cancelB('${b.id}')">✕</button>
+    </div>`).join('');
+  }
+
+  const al=document.getElementById('ab-list');
+  const blocks=[...d.blocks].sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+  al.innerHTML=blocks.length?blocks.map(b=>{
+    const hasB=d.bookings.some(x=>x.blockId===b.id);
+    const slotCount=(mins(b.end)-mins(b.start))/30;
+    return `<div class="ab-item">
+      <div><span>${fmtD(b.date)} &nbsp; ${fmtT(b.start)} – ${fmtT(b.end)}</span><br><small>${slotCount} × 30 min slots${hasB?' · has bookings':''}</small></div>
+      <button class="xbtn" onclick="removeB('${b.id}')">✕</button>
+    </div>`;
+  }).join(''):'<div style="font-size:13px;color:var(--color-text-secondary);">No availability blocks yet.</div>';
+}
+
+function addBlock(){
+  const date=document.getElementById('ab-date').value, start=document.getElementById('ab-start').value, end=document.getElementById('ab-end').value;
+  if(!date||!start||!end){alert('Please fill in all three fields.');return;}
+  if(start>=end){alert('End must be after start.');return;}
+  const dur=mins(end)-mins(start);
+  if(dur<30){alert('Block must be at least 30 minutes.');return;}
+  if(dur%30!==0){alert('Times must land on 30-minute marks (e.g. 9:00, 9:30, 10:00).');return;}
+  const d=load();
+  d.blocks.push({id:'bl'+Date.now(),date,start,end});
+  save(d); renderAdmin();
+}
+
+function removeB(id){
+  const d=load();
+  if(d.bookings.some(b=>b.blockId===id)&&!confirm('This block has bookings. Remove it anyway?')) return;
+  d.blocks=d.blocks.filter(b=>b.id!==id);
+  d.bookings=d.bookings.filter(b=>b.blockId!==id);
+  save(d); renderAdmin();
+}
+
+function cancelB(id){
+  if(!confirm('Cancel this booking?')) return;
+  const d=load(); d.bookings=d.bookings.filter(b=>b.id!==id); save(d); renderAdmin();
+}
+</script>
